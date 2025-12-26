@@ -27,7 +27,7 @@ class BasicBot:
         # Initialize the Client for Testnet
         self.client = Client(self.api_key, self.api_secret, testnet=True)
         logger.info("Binance Client initialized in Testnet mode")
-        print("⚠️ RUNNING ON TESTNET")
+        print("RUNNING ON TESTNET")
 
     def check_connection(self):
         try:
@@ -112,14 +112,10 @@ class BasicBot:
             logger.error(f"Unexpected error placing limit order: {e}")
             return {"error": str(e)}
 
-if __name__ == "__main__":
-    try:
-        bot = BasicBot()
-        bot.check_connection()
 class MockBot:
     def __init__(self):
         logger.info("MockBot initialized in Simulation Mode")
-        print("⚠️ RUNNING IN SIMULATION MODE (NO REAL TRADES)")
+        print("RUNNING IN SIMULATION MODE (NO REAL TRADES)")
 
     def check_connection(self):
         logger.info("MockBot: Connection successful")
@@ -158,3 +154,10 @@ class MockBot:
             "type": "LIMIT",
             "side": side
         }
+
+if __name__ == "__main__":
+    try:
+        bot = BasicBot()
+        bot.check_connection()
+    except ValueError as e:
+        print(e)

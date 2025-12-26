@@ -89,7 +89,26 @@ if st.button("Execute Order", type="primary"):
             st.error(f"Order Failed: {result['error']}")
         else:
             st.success("Order Placed Successfully!")
-            st.json(result)
+            
+            # Create a nice dashboard-style receipt
+            st.markdown("### 🎫 Trade Receipt")
+            
+            # Row 1: Key Info
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric("Symbol", result.get('symbol', symbol))
+            m2.metric("Side", result.get('side', side), delta="BUY" if result.get('side') == 'BUY' else "-SELL", delta_color="normal")
+            m3.metric("Type", result.get('type', order_type))
+            m4.metric("Status", result.get('status', 'UNKNOWN'))
+
+            # Row 2: Details
+            d1, d2, d3 = st.columns(3)
+            d1.metric("Quantity", result.get('origQty', quantity))
+            d2.metric("Price", result.get('price', price) if float(result.get('price', 0)) > 0 else "Market")
+            d3.metric("Order ID", result.get('orderId', 'N/A'))
+
+            # Raw JSON in an expander for debugging/technical review
+            with st.expander("🔍 View Raw API Response (Technical Details)"):
+                st.json(result)
 
 st.divider()
 
