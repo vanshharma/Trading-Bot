@@ -12,14 +12,25 @@ st.title("🤖 Binance Futures Testnet Bot")
 
 # Sidebar for Configuration
 st.sidebar.header("Configuration")
-st.sidebar.markdown("Enter your Testnet API Keys below (optional if set in .env).")
 
-api_key_input = st.sidebar.text_input("API Key", type="password")
-api_secret_input = st.sidebar.text_input("Secret Key", type="password")
+simulation_mode = st.sidebar.checkbox("Enable Simulation Mode", value=False)
+
+if simulation_mode:
+    st.sidebar.warning("Simulation Mode Active. No real trades will be placed.")
+    api_key_input = None
+    api_secret_input = None
+else:
+    st.sidebar.markdown("Enter your Testnet API Keys below (optional if set in .env).")
+    api_key_input = st.sidebar.text_input("API Key", type="password")
+    api_secret_input = st.sidebar.text_input("Secret Key", type="password")
 
 # Initialize Bot
 @st.cache_resource(show_spinner=False)
-def get_bot(api_key, api_secret):
+def get_bot(api_key, api_secret, is_sim):
+    if is_sim:
+        from bot import MockBot
+        return MockBot()
+    
     try:
         # Pass None if inputs are empty strings so it falls back to env vars
         key = api_key if api_key else None
@@ -28,7 +39,7 @@ def get_bot(api_key, api_secret):
     except Exception as e:
         return None
 
-bot = get_bot(api_key_input, api_secret_input)
+bot = get_bot(api_key_input, api_secret_input, simulation_mode)
 
 if not bot:
     st.error("Failed to initialize bot. Please check your API keys in .env or the sidebar.")
@@ -38,14 +49,12 @@ if not bot:
 st.subheader("Connection Status")
 if st.button("Check Connection"):
     try:
-        # We need to capture the output or return value. 
-        # BasicBot.check_connection prints to stdout. 
-        # Let's just call the client directly for the UI or modify BasicBot to return the time.
-        # Since we can't easily change BasicBot return type without breaking other things potentially,
-        # we'll just access the client here for the UI check or trust the logs.
-        # Actually, let's just wrap it.
-        server_time = bot.client.get_server_time()
-        st.success(f"Connected! Server Time: {server_time['serverTime']}")
+        if simulation_mode:
+             bot.check_connection() # Prints to console
+             st.success("Connected to Simulated Server!")
+        else:
+            server_time = bot.client.futures_time()
+            st.success(f"Connected! Server Time: {server_time['serverTime']}")
     except Exception as e:
         st.error(f"Connection failed: {e}")
 

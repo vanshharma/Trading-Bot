@@ -30,6 +30,7 @@ The project follows a modular design to ensure maintainability and scalability:
 *   **`app.py`:** Offers a user-friendly web interface using Streamlit for visual interaction and monitoring.
 
 ## Key Features
+*   **Simulation Mode:** Includes a `MockBot` that simulates API responses, allowing users to test the UI and CLI logic without valid API keys.
 *   **Precision & Step-Size Handling:** Automatically fetches exchange filters (`stepSize`, `tickSize`) and rounds order quantities and prices to prevent `APIError(code=-1111)`.
 *   **Correct Futures Endpoints:** Strictly uses `futures_*` endpoints (e.g., `futures_create_order`, `futures_time`) to ensure compatibility with the Futures market, avoiding common Spot API mix-ups.
 *   **Testnet Safety:** Explicitly flags Testnet usage to prevent accidental real-money trading.
@@ -42,11 +43,11 @@ Run the interactive terminal menu:
 ```bash
 python main.py
 ```
-Follow the on-screen prompts to check connection or place orders.
+You will be asked if you want to run in **Simulation Mode**. Type `y` to test without keys, or `n` to use real Testnet keys.
 
 ### Streamlit UI
 Launch the web dashboard:
 ```bash
 streamlit run app.py
 ```
-This will open a local web server (usually at `http://localhost:8501`) where you can configure keys, check status, and execute orders via a graphical form.
+Check the **"Enable Simulation Mode"** box in the sidebar to test the interface without API keys.

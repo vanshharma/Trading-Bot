@@ -25,8 +25,15 @@ def get_valid_side():
 
 def main():
     print("Initializing Binance Futures Testnet Bot...")
+    
+    use_sim = input("Run in Simulation Mode? (y/n): ").lower() == 'y'
+    
     try:
-        bot = BasicBot()
+        if use_sim:
+            from bot import MockBot
+            bot = MockBot()
+        else:
+            bot = BasicBot()
     except ValueError as e:
         print(f"Error: {e}")
         return

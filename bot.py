@@ -116,5 +116,45 @@ if __name__ == "__main__":
     try:
         bot = BasicBot()
         bot.check_connection()
-    except ValueError as e:
-        print(e)
+class MockBot:
+    def __init__(self):
+        logger.info("MockBot initialized in Simulation Mode")
+        print("⚠️ RUNNING IN SIMULATION MODE (NO REAL TRADES)")
+
+    def check_connection(self):
+        logger.info("MockBot: Connection successful")
+        print("MockBot: Connected to Simulated Futures Testnet. Server time: 1234567890")
+
+    def get_symbol_precision(self, symbol):
+        # Return default values for simulation
+        return 0.001, 0.1
+
+    def place_market_order(self, symbol, side, quantity):
+        logger.info(f"MockBot: Placing MARKET {side} order for {quantity} {symbol}")
+        return {
+            "symbol": symbol,
+            "orderId": 12345678,
+            "clientOrderId": "mock_order_123",
+            "transactTime": 1234567890,
+            "price": "0",
+            "origQty": str(quantity),
+            "executedQty": str(quantity),
+            "status": "FILLED",
+            "type": "MARKET",
+            "side": side
+        }
+
+    def place_limit_order(self, symbol, side, quantity, price):
+        logger.info(f"MockBot: Placing LIMIT {side} order for {quantity} {symbol} at {price}")
+        return {
+            "symbol": symbol,
+            "orderId": 87654321,
+            "clientOrderId": "mock_limit_123",
+            "transactTime": 1234567890,
+            "price": str(price),
+            "origQty": str(quantity),
+            "executedQty": "0",
+            "status": "NEW",
+            "type": "LIMIT",
+            "side": side
+        }
